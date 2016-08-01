@@ -1,21 +1,11 @@
-package NI
+package ni
 
-var disallowedSecond map[string]bool
-var disallowedFirstOrSecond map[string]bool
 var disallowedCombinations map[string]bool
+var disallowedSecond map[byte]bool
+var disallowedFirstOrSecond map[byte]bool
+var allowedLast map[byte]bool
 
 func init() {
-	disallowedFirstOrSecond = map[string]bool{
-		"D": true,
-		"F": true,
-		"I": true,
-		"Q": true,
-		"U": true,
-		"V": true,
-	}
-	disallowedSecond = map[string]bool{
-		"O": true,
-	}
 	disallowedCombinations = map[string]bool{
 		"BG": true,
 		"GB": true,
@@ -25,14 +15,36 @@ func init() {
 		"TN": true,
 		"ZZ": true,
 	}
+	disallowedFirstOrSecond = map[byte]bool{
+		'D': true,
+		'F': true,
+		'I': true,
+		'Q': true,
+		'U': true,
+		'V': true,
+	}
+	disallowedSecond = map[byte]bool{
+		'O': true,
+	}
+	allowedLast = map[byte]bool{
+		'A': true,
+		'B': true,
+		'C': true,
+		'D': true,
+		' ': true,
+	}
+
 }
-func ValidNI(s string) bool {
+func IsValid(s string) bool {
 	l := len(s)
 	if l != 9 && l != 8 {
 		return false
 	}
 
-	if disallowedCombinations[s[0:2]] || disallowedFirstOrSecond[s[0:1]] || disallowedFirstOrSecond[s[1:2]] || disallowedSecond[s[1:2]] {
+	if disallowedCombinations[s[0:2]] ||
+		disallowedFirstOrSecond[s[0]] ||
+		disallowedFirstOrSecond[s[1]] ||
+		disallowedSecond[s[1]] {
 		return false
 	}
 
@@ -42,5 +54,5 @@ func ValidNI(s string) bool {
 		}
 	}
 
-	return l == 8 || (s[8] >= 'A' && s[8] < 'E') || s[8] == ' '
+	return l == 8 || allowedLast[s[8]]
 }
